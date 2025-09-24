@@ -2,27 +2,6 @@ import React, { useState, useCallback } from 'react';
 
 import './LoginPage.css';
 
-function Input({
-    id,
-    label,
-    placeholder,
-    value,
-    onChange,
-}) {
-    return (
-        <div className="mb-4">
-            <label htmlFor={id} className="form label">{label}</label><br/>
-            <input
-                id={id}
-                type="text"
-                className="form-control"
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-            />
-        </div>
-    );
-}
 
 function LoginPage() {
     const [email, setEmail] = useState('');
@@ -42,21 +21,29 @@ function LoginPage() {
                     <div className="login-card p-4 border rounded">
                         <h2 className="text-center mb-4 font-weight-bold">Login</h2>
 
-                        <Input
-                            id="email"
-                            label="Email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={onEmailChange}
-                        />
+                        <div className="mb-4">
+                            <label htmlFor="email" className="form label">"Email"</label><br/>
+                            <input
+                                id="email"
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={onEmailChange}
+                            />
+                        </div>
 
-                        <Input
-                            id="password"
-                            label="Password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={onPasswordChange}
-                        />
+                        <div className="mb-4">
+                            <label htmlFor="password" className="form label">"Password"</label><br/>
+                            <input
+                                id="password"
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter password"
+                                value={password}
+                                onChange={onPasswordChange}
+                            />
+                        </div>
 
                         <button className="btn btn-primary w-100 mb-3" onClick={handleLogin}>Login</button>
                     

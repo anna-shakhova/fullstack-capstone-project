@@ -1,37 +1,52 @@
 import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { urlConfig } from '../../config';
+import { useAppContext } from '../../context/AuthContext';
 import './RegisterPage.css';
-
-function Input({
-    id,
-    label,
-    placeholder,
-    value,
-    onChange,
-}) {
-    return (
-        <div className="mb-4">
-            <label htmlFor={id} className="form label">{label}</label><br/>
-            <input
-                id={id}
-                type="text"
-                className="form-control"
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-            />
-        </div>
-    );
-}
 
 function RegisterPage() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showerr, setShowerr] = useState('');
+
+    const navigate = useNavigate();
+    const { setIsLoggedIn } = useAppContext();
 
     const handleRegister = async () => {
-        console.log("Register invoked")
+        try {
+            const response = await fetch(`${urlConfig.backendUrl}/api/auth/register`, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                }),
+            });
+
+            const json = await response.json();
+
+            if (json.authtoken) {
+                sessionStorage.setItem('auth-token', json.authtoken);
+                sessionStorage.setItem('name', firstName);
+                sessionStorage.setItem('email', json.email);
+
+                setIsLoggedIn(true);
+                navigate('/app');
+            }
+
+            if (json.error) {
+                setShowerr(json.error);
+            }
+        } catch(e) {
+            console.log("Error fetching details: " + e.message);
+        }
     }
 
     const onFirstNameChange = useCallback((e) => setFirstName(e.target.value), []);
@@ -46,37 +61,55 @@ function RegisterPage() {
                     <div className="register-card p-4 border rounded">
                         <h2 className="text-center mb-4 font-weight-bold">Register</h2>
 
-                        <Input
-                            id="firstName"
-                            label="First Name"
-                            placeholder="Enter your first name"
-                            value={firstName}
-                            onChange={onFirstNameChange}
-                        />
+                        <div className="mb-4">
+                            <label htmlFor="firstName" className="form label">"First Name"</label><br/>
+                            <input
+                                id="firstName"
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter your first name"
+                                value={firstName}
+                                onChange={onFirstNameChange}
+                            />
+                        </div>
 
-                        <Input
-                            id="lastName"
-                            label="Last Name"
-                            placeholder="Enter your last name"
-                            value={lastName}
-                            onChange={onLastNameChange}
-                        />
+                        <div className="mb-4">
+                            <label htmlFor="lastName" className="form label">"Last Name"</label><br/>
+                            <input
+                                id="lastName"
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter your last name"
+                                value={lastName}
+                                onChange={onLastNameChange}
+                            />
+                        </div>
 
-                        <Input
-                            id="email"
-                            label="Email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={onEmailChange}
-                        />
+                        <div className="mb-4">
+                            <label htmlFor="email" className="form label">"Email"</label><br/>
+                            <input
+                                id="email"
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={onEmailChange}
+                            />
 
-                        <Input
-                            id="password"
-                            label="Password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={onPasswordChange}
-                        />
+                            <div className="text-danger">{showerr}</div>
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="password" className="form label">"Password"</label><br/>
+                            <input
+                                id="password"
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter password"
+                                value={password}
+                                onChange={onPasswordChange}
+                            />
+                        </div>
 
                         <button className="btn btn-primary w-100 mb-3" onClick={handleRegister}>Register</button>
                     
