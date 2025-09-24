@@ -40,7 +40,7 @@ function DetailsPage() {
 
 		// Task 3: Scroll to top on component mount
 		window.scrollTo(0, 0)
-    }, [productId]);
+    }, [productId, navigate]);
 
 
     const handleBackClick = () => {
@@ -115,7 +115,7 @@ function DetailsPage() {
             <div className="comments-section mt-4">
                 <h3 className="mb-3">Comments</h3>
 				{/* Task 7: Render comments section by using the map function to go through all the comments */}
-				{gift.comments.map((comment, index) => (
+				{comments.map((comment, index) => (
                     <div key={index} className="card mb-3">
                         <div className="card-body">
                             <p className="comment-author"><strong>{comment.author}:</strong></p>

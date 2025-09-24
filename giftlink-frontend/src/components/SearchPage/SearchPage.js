@@ -70,7 +70,7 @@ function SearchPage() {
                             <select id="categorySelect" className="form-control my-1">
                                 <option value="">All</option>
                                 {categories.map(category => (
-                                <option key={category} value={category}>{category}</option>
+                                    <option key={category} value={category}>{category}</option>
                                 ))}
                             </select>
 
@@ -78,7 +78,7 @@ function SearchPage() {
                             <select id="conditionSelect" className="form-control my-1">
                                 <option value="">All</option>
                                 {conditions.map(condition => (
-                                <option key={condition} value={condition}>{condition}</option>
+                                    <option key={condition} value={condition}>{condition}</option>
                                 ))}
                             </select>
 

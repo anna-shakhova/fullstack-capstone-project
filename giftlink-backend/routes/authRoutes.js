@@ -55,14 +55,14 @@ router.post('/login', async (req, res) => {
         const user = await collection.findOne({ email: req.body.email });
 
         if (user) {
-            const isPasswordMatch = await bcryptjs.compare(req.body.password, theUser.password);
+            const isPasswordMatch = await bcryptjs.compare(req.body.password, user.password);
 
             if (!isPasswordMatch) {
                 logger.error('Passwords do not match');
                 return res.status(404).json({ error: 'Wrong pasword' });    
             }
 
-            const payload = { user: { id: theUser._id.toString() } };
+            const payload = { user: { id: user._id.toString() } };
             const authtoken = jwt.sign(payload, JWT_SECRET);
 
             logger.info('User logged in successfully');

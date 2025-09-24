@@ -66,7 +66,7 @@ const Profile = () => {
         
             const payload = { ...updatedDetails };
             const response = await fetch(`${urlConfig.backendUrl}/api/auth/update`, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     "Authorization": `Bearer ${authtoken}`,
                     "Content-Type": "application/json",
@@ -77,12 +77,11 @@ const Profile = () => {
         
             if (response.ok) {
                 sessionStorage.setItem("name", updatedDetails.name);
-                sessionStorage.setItem("email", updatedDetails.email);
 
                 setUserName(updatedDetails.name);
                 setUserDetails(updatedDetails);
                 setEditMode(false);
-                
+
                 // Display success message to the user
                 setChanged("Name Changed Successfully!");
                 setTimeout(() => {
