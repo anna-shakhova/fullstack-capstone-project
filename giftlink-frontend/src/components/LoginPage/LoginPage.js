@@ -1,18 +1,74 @@
 import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { urlConfig } from '../../config';
+import { useAppContext } from '../../context/AuthContext';
 import './LoginPage.css';
-
 
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showerr, setShowerr] = useState('');
+
+    const navigate = useNavigate();
+    const { setIsLoggedIn } = useAppContext();
 
     const handleLogin = async () => {
-        console.log("Login invoked")
+        try {
+            const bearerToken = sessionStorage.getItem('bearer-token');
+            const response = await fetch(`${urlConfig.backendUrl}/api/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    'Authorization': bearerToken ? `Bearer ${bearerToken}` : '',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+            });
+
+            const json = await response.json();
+
+            if (json.authtoken) {
+                sessionStorage.setItem('auth-token', json.authtoken);
+                sessionStorage.setItem('name', json.firstName);
+                sessionStorage.setItem('email', json.email);
+
+                setIsLoggedIn(true);
+                navigate('/app');
+            } else {
+                setEmail('');
+                setPassword('');
+                setShowerr('Wrong password. Try again.');
+                setTimeout(() => {
+                    setShowerr('');
+                }, 2000);
+            }
+
+            if (json.error) {
+                setShowerr(json.error);
+            }
+        } catch(e) {
+            console.log("Error fetching details: " + e.message);
+        }
     }
 
-    const onEmailChange = useCallback((e) => setEmail(e.target.value), []);
-    const onPasswordChange = useCallback((e) => setPassword(e.target.value), []);
+    const onEmailChange = useCallback((e) => {
+        setEmail(e.target.value);
+        setShowerr('');
+    }, []);
+
+    const onPasswordChange = useCallback((e) => {
+        setPassword(e.target.value);
+        setShowerr('');
+    }, []);
+
+    useEffect(() => {
+        if (sessionStorage.getItem('auth-token')) {
+            navigate('/app');
+        }
+    }, [navigate])
 
     return (
         <div className="container mt-5">
@@ -31,6 +87,8 @@ function LoginPage() {
                                 value={email}
                                 onChange={onEmailChange}
                             />
+
+                            <div className="text-danger">{showerr}</div>
                         </div>
 
                         <div className="mb-4">
