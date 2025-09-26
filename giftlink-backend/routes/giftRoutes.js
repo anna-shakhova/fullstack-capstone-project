@@ -1,3 +1,4 @@
+/*jshint esversion: 8 */
 const express = require('express');
 const router = express.Router();
 const connectToDatabase = require('../models/db');
@@ -20,7 +21,7 @@ router.get('/:id', async (req, res) => {
         const db = await connectToDatabase();
         const giftsCollection = db.collection('gifts');
         const id = req.params.id;
-        const gift = await giftsCollection.findOne({ id: id })
+        const gift = await giftsCollection.findOne({ id: id });
 
         if (!gift) {
             return res.status(404).send('Gift not found');
